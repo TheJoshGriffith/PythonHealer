@@ -14,5 +14,6 @@ print("EXP         : " + str(cl.getEXP()))
 #cl.sendText("Test")
 #cl.sendKey(win32con.VK_F1)
 
-hrs = [healrule.HealRule(200, 3000, 20, 10000, "F1"), healrule.HealRule(400, 500, 20, 1000, "F2")]
+# Rules will be prioritised where first is most important
+hrs = [healrule.HealRule(0, 40, 10, 100, "F3", True), healrule.HealRule(40, 60, 10, 100, "F2", True), healrule.HealRule(60, 80, 10, 100, "F1", True), healrule.HealRule(0, 100, 0, 80, "F4", True)]
 he = healer.Healer(cl, hrs)

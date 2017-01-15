@@ -6,17 +6,26 @@ class Client:
         self.addr = addresses.Addresses()
         self.ctrl = control.Control(self.mem)
 
+    def percentage(self, part, whole):
+        return 100 * float(part) / float(whole)
+
     def getEXP(self):
         return self.mem.ReadPtrInt(self.addr.exp)
 
     def getHP(self):
         return self.mem.ReadPtrShort(self.addr.hp)
 
+    def getHPPC(self):
+        return self.percentage(self.getHP(), self.getMaxHP())
+
     def getMaxHP(self):
         return self.mem.ReadPtrShort(self.addr.maxhp)
 
     def getMP(self):
         return self.mem.ReadPtrShort(self.addr.mp)
+
+    def getMPPC(self):
+        return self.percentage(self.getMP(), self.getMaxMP())
 
     def getMaxMP(self):
         return self.mem.ReadPtrShort(self.addr.maxmp)

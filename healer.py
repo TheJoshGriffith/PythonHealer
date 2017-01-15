@@ -20,9 +20,17 @@ class Healer:
             if hr == healrule:
                 self.healrules.remove(healrule)
 
+    def replaceHealRule(self, oldhealrule, newhealrule):
+        for hr in self.healrules:
+            if hr == oldhealrule:
+                hr = newhealrule
+
     def runHeal(self):
         while(True):
             for hr in self.healrules:
-                if self.cl.getHP() > hr.minhp and self.cl.getHP() < hr.maxhp and hr.minmp < self.cl.getMP() < hr.maxmp:
-                    self.cl.ctrl.SendKey(hr.hotkey)
+                if hr.percent:
+                    if self.cl.getHPPC() > hr.minhp and self.cl.getHPPC() < hr.maxhp and hr.minmp < self.cl.getMPPC() < hr.maxmp:
+                        self.cl.ctrl.SendKey(hr.hotkey)
+                    else:
+                        self.cl.ctrl.SendKey(hr.hotkey)
                     time.sleep(random.randint(self.delaymin, self.delaymax) / 1000)
