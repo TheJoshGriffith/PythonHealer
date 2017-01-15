@@ -29,8 +29,10 @@ class Healer:
         while(True):
             for hr in self.healrules:
                 if hr.percent:
-                    if self.cl.getHPPC() > hr.minhp and self.cl.getHPPC() < hr.maxhp and hr.minmp < self.cl.getMPPC() < hr.maxmp:
+                    if hr.minhp < self.cl.getHPPC() <= hr.maxhp and hr.minmp < self.cl.getMPPC() <= hr.maxmp:
                         self.cl.ctrl.SendKey(hr.hotkey)
-                    else:
+                        time.sleep(random.randint(self.delaymin, self.delaymax) / 1000)
+                else:
+                    if hr.minhp < self.cl.getHP() <= hr.maxhp and hr.minmp < self.cl.getMP() <= hr.maxmp:
                         self.cl.ctrl.SendKey(hr.hotkey)
-                    time.sleep(random.randint(self.delaymin, self.delaymax) / 1000)
+                        time.sleep(random.randint(self.delaymin, self.delaymax) / 1000)
