@@ -46,10 +46,11 @@ class Memory:
         return val
 
     def ReadShortDirect(self, Address):
-        val = ctypes.c_short()
+        val = ctypes.c_ushort()
         buffersize = ctypes.sizeof(val)
         bytesread = ctypes.c_ulong(0)
         self.rPM(self.HANDLE.handle, Address, ctypes.byref(val), buffersize, ctypes.byref(bytesread))
+        #print(type(val.value))
         return val
 
     def ReadPtrInt(self, Address):
@@ -78,9 +79,10 @@ class Memory:
                 data = self.ReadIntDirect(toread)
                 iter += 1
             elif iter == len(Address) - 1:
+                res = ctypes.c_short(0)
                 toread = ctypes.c_long(data.value + i).value
-                data = self.ReadShortDirect(toread)
-                return data.value
+                res = self.ReadShortDirect(toread)
+                return res.value
             else:
                 toread = ctypes.c_long(data.value + i).value
                 data = self.ReadIntDirect(toread)
