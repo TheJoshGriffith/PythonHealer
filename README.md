@@ -13,7 +13,7 @@ This will probably be asked if anyone ever visits this project, so my best answe
 some real world PostMessage calls which I produced using my keyboard, and I used a VK list I took from the internet. Every 
 piece of code here has not been tested, and definitely not in anger. The only thing I've done to offer any protection was to 
 implement a randomisation on casting spells, you can see this inside healer.py where there is a time.sleep() inside runHeal 
-which I hope randomises things enough. The range is currently set to 800,1200 which should be as human as is neccessary, 
+which I hope randomises things enough. The range is currently set to 500,600 which should be as human as is neccessary,
 although the values I was getting were fairly close within the range.
 
 ## Is that all it does
