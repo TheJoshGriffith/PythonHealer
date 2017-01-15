@@ -1,7 +1,7 @@
 import client, healrule, threading, time, pprint, random
 
 class Healer:
-    def __init__(self, cl, healrules, delaymin = 800, delaymax = 1200):
+    def __init__(self, cl, healrules, delaymin = 500, delaymax = 600):
         self.cl = cl
         self.healrules = healrules
         self.healerThread = threading.Thread(target=self.runHeal)
