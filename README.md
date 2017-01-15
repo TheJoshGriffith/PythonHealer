@@ -8,6 +8,11 @@ a sample is provided for your browsing. First it will dump a load of data out to
 work out if there has been a recent client update which has broken the tool. Make sure you check it carefully to ensure 
 all values are as you would expect.
 
+## How to run it
+I've been running unittest.py as my main point of call for development. It contains some sample stuff to get you started. The 
+only pre-requesites are Python 3.5 32-bit and pywin32 which must be installed from sourceforge (no pip package, yet). It's not 
+a nice process to install these but it's a requirement to use 32-bit or the module enumeration will be the first thing to fail.
+
 ## How safe is it
 This will probably be asked if anyone ever visits this project, so my best answer is: I have absolutely no idea. I simulated 
 some real world PostMessage calls which I produced using my keyboard, and I used a VK list I took from the internet. Every 
