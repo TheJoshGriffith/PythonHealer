@@ -6,7 +6,7 @@ class Memory:
         PROCESS_ALL_ACCESS = 0x1F0FFF
         self.rPM = ctypes.windll.kernel32.ReadProcessMemory
         self.wPM = ctypes.windll.kernel32.WriteProcessMemory
-        self.HWND = self.GetTibiaHandle()
+        self.HWND = self.GetDefaultTibiaHandle()
         self.PID = win32process.GetWindowThreadProcessId(self.HWND)[1]
         self.HANDLE = win32api.OpenProcess(PROCESS_ALL_ACCESS, 0, self.PID)
         self.BASEADDRESSLIST = win32process.EnumProcessModulesEx(self.HANDLE.handle)
@@ -24,12 +24,23 @@ class Memory:
         print("HANDLE      : " + str(self.HANDLE.handle))
         print("BASEADDRESS : " + str(self.BASEADDRESS))
 
+    def GetDefaultTibiaHandle(self):
+        return self.GetTibiaHandle()[0].GetSafeHwnd()
+
     def GetTibiaHandle(self):
-        hwnd = win32ui.FindWindowEx(None, None, "Qt5QWindowOwnDCIcon", None).GetSafeHwnd()
-        while True:
-            if "Tibia" in win32gui.GetWindowText(hwnd):
-                return hwnd
-            hwnd = win32ui.FindWindowEx(None, hwnd, "Qt5QWindowOwnDCIcon", None).GetSafeHwnd()
+        hwndList = []
+        currentHwnd = win32ui.FindWindowEx(None, None, "Qt5QWindowOwnDCIcon", None)
+        hwndList.insert(0, currentHwnd)
+        i = 1
+        while currentHwnd != None:
+            try:
+                currentHwnd = win32ui.FindWindowEx(None, hwndList[len(hwndList) - 1], "Qt5QWindowOwnDCIcon", None)
+            except win32ui.error:
+                currentHwnd = None
+            if currentHwnd != None:
+                hwndList.insert(i, currentHwnd)
+            i += 1
+        return hwndList
 
     def ReadString(self, Address):
         data = b"wah"
