@@ -1,4 +1,4 @@
-import ctypes, win32ui, win32gui, win32process, win32api
+import ctypes, win32ui, win32gui, win32process, win32api, clientprocess
 
 
 class Memory:
@@ -25,9 +25,23 @@ class Memory:
         print("BASEADDRESS : " + str(self.BASEADDRESS))
 
     def GetDefaultTibiaHandle(self):
-        return self.GetTibiaHandle()[0].GetSafeHwnd()
+        return self.gettibiahandle()[0].GetSafeHwnd()
 
-    def GetTibiaHandle(self):
+    @staticmethod
+    def gettibiaclients():
+        clientList = []
+        i = 0
+        for Client in Memory.gettibiahandle():
+            p = clientprocess
+            p.hwid = Client.GetSafeHwnd()
+            p.pid = win32process.GetWindowThreadProcessId(p.hwid)
+            p.title = win32gui.GetWindowText(p.hwid)
+            clientList.insert(i, p)
+        return clientList
+
+
+    @staticmethod
+    def gettibiahandle():
         hwndList = []
         currentHwnd = win32ui.FindWindowEx(None, None, "Qt5QWindowOwnDCIcon", None)
         hwndList.insert(0, currentHwnd)
