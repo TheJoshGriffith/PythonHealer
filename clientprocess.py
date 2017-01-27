@@ -1,5 +1,6 @@
 class ClientProcess:
-    client = None
-    hwnd = 0
-    title = ""
-    pid = 0
+    def __init__(self, client, hwnd, title, pid):
+        self.client = client
+        self.hwnd = hwnd
+        self.title = title
+        self.pid = pid

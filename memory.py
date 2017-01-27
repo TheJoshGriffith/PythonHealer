@@ -32,37 +32,33 @@ class Memory:
         iter = 0
         for Client in clientList:
             print(str(iter) + ": " + win32gui.GetWindowText(Client.hwnd))
+            iter += 1
         res = input("Select a client: ")
         print("You selected client " + win32gui.GetWindowText(clientList[int(res)].hwnd))
-        return clientList[int(res)].client.GetSafeHwnd()
+        return clientList[int(res)].client
 
     @staticmethod
     def gettibiaclients():
         clientList = []
         i = 0
         for Client in Memory.gettibiahandle():
-            p = clientprocess
-            p.client = Client
-            p.hwnd = Client.GetSafeHwnd()
-            p.pid = win32process.GetWindowThreadProcessId(p.hwnd)
-            p.title = win32gui.GetWindowText(p.hwnd)
-            clientList.insert(i, p)
+            clientList.insert(i, clientprocess.ClientProcess(Client, Client, win32gui.GetWindowText(Client), win32process.GetWindowThreadProcessId(Client)))
+            i += 1
         return clientList
 
 
     @staticmethod
     def gettibiahandle():
         hwndList = []
-        currentHwnd = win32ui.FindWindowEx(None, None, "Qt5QWindowOwnDCIcon", None)
+        currentHwnd = win32ui.FindWindowEx(None, None, "Qt5QWindowOwnDCIcon", None).GetSafeHwnd()
         hwndList.insert(0, currentHwnd)
         i = 1
         while currentHwnd != None:
             try:
-                currentHwnd = win32ui.FindWindowEx(None, hwndList[len(hwndList) - 1], "Qt5QWindowOwnDCIcon", None)
+                currentHwnd = win32ui.FindWindowEx(None, currentHwnd, "Qt5QWindowOwnDCIcon", None).GetSafeHwnd()
+                hwndList.insert(i, currentHwnd)
             except win32ui.error:
                 currentHwnd = None
-            if currentHwnd != None:
-                hwndList.insert(i, currentHwnd)
             i += 1
         return hwndList
 
