@@ -1,4 +1,4 @@
-import ctypes, win32ui, win32gui, win32process, win32api
+import ctypes, win32ui, win32gui, win32process, win32api, clientprocess
 
 
 class Memory:
@@ -6,7 +6,7 @@ class Memory:
         PROCESS_ALL_ACCESS = 0x1F0FFF
         self.rPM = ctypes.windll.kernel32.ReadProcessMemory
         self.wPM = ctypes.windll.kernel32.WriteProcessMemory
-        self.HWND = self.GetTibiaHandle()
+        self.HWND = self.GetClientByConsole()
         self.PID = win32process.GetWindowThreadProcessId(self.HWND)[1]
         self.HANDLE = win32api.OpenProcess(PROCESS_ALL_ACCESS, 0, self.PID)
         self.BASEADDRESSLIST = win32process.EnumProcessModulesEx(self.HANDLE.handle)
@@ -24,12 +24,43 @@ class Memory:
         print("HANDLE      : " + str(self.HANDLE.handle))
         print("BASEADDRESS : " + str(self.BASEADDRESS))
 
-    def GetTibiaHandle(self):
-        hwnd = win32ui.FindWindowEx(None, None, "Qt5QWindowOwnDCIcon", None).GetSafeHwnd()
-        while True:
-            if "Tibia" in win32gui.GetWindowText(hwnd):
-                return hwnd
-            hwnd = win32ui.FindWindowEx(None, hwnd, "Qt5QWindowOwnDCIcon", None).GetSafeHwnd()
+    def GetDefaultTibiaHandle(self):
+        return self.gettibiahandle()[0].GetSafeHwnd()
+
+    def GetClientByConsole(self):
+        clientList = self.gettibiaclients()
+        iter = 0
+        for Client in clientList:
+            print(str(iter) + ": " + win32gui.GetWindowText(Client.hwnd))
+            iter += 1
+        res = input("Select a client: ")
+        print("You selected client " + win32gui.GetWindowText(clientList[int(res)].hwnd))
+        return clientList[int(res)].client
+
+    @staticmethod
+    def gettibiaclients():
+        clientList = []
+        i = 0
+        for Client in Memory.gettibiahandle():
+            clientList.insert(i, clientprocess.ClientProcess(Client, Client, win32gui.GetWindowText(Client), win32process.GetWindowThreadProcessId(Client)))
+            i += 1
+        return clientList
+
+
+    @staticmethod
+    def gettibiahandle():
+        hwndList = []
+        currentHwnd = win32ui.FindWindowEx(None, None, "Qt5QWindowOwnDCIcon", None).GetSafeHwnd()
+        hwndList.insert(0, currentHwnd)
+        i = 1
+        while currentHwnd != None:
+            try:
+                currentHwnd = win32ui.FindWindowEx(None, currentHwnd, "Qt5QWindowOwnDCIcon", None).GetSafeHwnd()
+                hwndList.insert(i, currentHwnd)
+            except win32ui.error:
+                currentHwnd = None
+            i += 1
+        return hwndList
 
     def ReadString(self, Address):
         data = b"wah"
