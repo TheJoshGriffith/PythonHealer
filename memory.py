@@ -6,7 +6,7 @@ class Memory:
         PROCESS_ALL_ACCESS = 0x1F0FFF
         self.rPM = ctypes.windll.kernel32.ReadProcessMemory
         self.wPM = ctypes.windll.kernel32.WriteProcessMemory
-        self.HWND = self.GetDefaultTibiaHandle()
+        self.HWND = self.GetClientByConsole()
         self.PID = win32process.GetWindowThreadProcessId(self.HWND)[1]
         self.HANDLE = win32api.OpenProcess(PROCESS_ALL_ACCESS, 0, self.PID)
         self.BASEADDRESSLIST = win32process.EnumProcessModulesEx(self.HANDLE.handle)
@@ -27,15 +27,25 @@ class Memory:
     def GetDefaultTibiaHandle(self):
         return self.gettibiahandle()[0].GetSafeHwnd()
 
+    def GetClientByConsole(self):
+        clientList = self.gettibiaclients()
+        iter = 0
+        for Client in clientList:
+            print(str(iter) + ": " + win32gui.GetWindowText(Client.hwnd))
+        res = input("Select a client: ")
+        print("You selected client " + win32gui.GetWindowText(clientList[int(res)].hwnd))
+        return clientList[int(res)].client.GetSafeHwnd()
+
     @staticmethod
     def gettibiaclients():
         clientList = []
         i = 0
         for Client in Memory.gettibiahandle():
             p = clientprocess
-            p.hwid = Client.GetSafeHwnd()
-            p.pid = win32process.GetWindowThreadProcessId(p.hwid)
-            p.title = win32gui.GetWindowText(p.hwid)
+            p.client = Client
+            p.hwnd = Client.GetSafeHwnd()
+            p.pid = win32process.GetWindowThreadProcessId(p.hwnd)
+            p.title = win32gui.GetWindowText(p.hwnd)
             clientList.insert(i, p)
         return clientList
 
