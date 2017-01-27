@@ -1,4 +1,4 @@
-import ctypes, win32ui, win32gui, win32process, win32api, clientprocess
+import ctypes, win32ui, win32gui, win32process, win32api, clientprocess, control
 
 
 class Memory:
@@ -6,9 +6,8 @@ class Memory:
         PROCESS_ALL_ACCESS = 0x1F0FFF
         self.rPM = ctypes.windll.kernel32.ReadProcessMemory
         self.wPM = ctypes.windll.kernel32.WriteProcessMemory
-        self.HWND = self.GetClientByConsole()
-        self.PID = win32process.GetWindowThreadProcessId(self.HWND)[1]
-        self.HANDLE = win32api.OpenProcess(PROCESS_ALL_ACCESS, 0, self.PID)
+        self.CLIENT = self.GetClientByConsole()
+        self.HANDLE = win32api.OpenProcess(PROCESS_ALL_ACCESS, 0, self.CLIENT.pid[1])
         self.BASEADDRESSLIST = win32process.EnumProcessModulesEx(self.HANDLE.handle)
         for BA in self.BASEADDRESSLIST:
             if "Qt5Core.dll" in win32process.GetModuleFileNameEx(self.HANDLE.handle, BA):
@@ -19,8 +18,8 @@ class Memory:
 
     def Dump(self):
         print()
-        print("HWND        : " + str(self.HWND))
-        print("PID         : " + str(self.PID))
+        print("HWND        : " + str(self.CLIENT.hwnd))
+        print("PID         : " + str(self.CLIENT.pid))
         print("HANDLE      : " + str(self.HANDLE.handle))
         print("BASEADDRESS : " + str(self.BASEADDRESS))
 
@@ -35,14 +34,14 @@ class Memory:
             iter += 1
         res = input("Select a client: ")
         print("You selected client " + win32gui.GetWindowText(clientList[int(res)].hwnd))
-        return clientList[int(res)].client
+        return clientList[int(res)]
 
     @staticmethod
     def gettibiaclients():
         clientList = []
         i = 0
         for Client in Memory.gettibiahandle():
-            clientList.insert(i, clientprocess.ClientProcess(Client, Client, win32gui.GetWindowText(Client), win32process.GetWindowThreadProcessId(Client)))
+            clientList.insert(i, clientprocess.ClientProcess(Client, win32gui.GetWindowText(Client), win32process.GetWindowThreadProcessId(Client)))
             i += 1
         return clientList
 
