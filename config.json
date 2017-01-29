@@ -1,0 +1,40 @@
+{
+  "healrules": [
+    {
+      "minhp": 0,
+      "maxhp": 60,
+      "minmp": 10,
+      "maxmp": 100,
+      "hotkey": "F3",
+      "type": "HEALRULE_SPELL",
+      "percent": true
+    },
+    {
+      "minhp": 60,
+      "maxhp": 80,
+      "minmp": 10,
+      "maxmp": 100,
+      "hotkey": "F2",
+      "type": "HEALRULE_SPELL",
+      "percent": true
+    },
+    {
+      "minhp": 80,
+      "maxhp": 90,
+      "minmp": 10,
+      "maxmp": 100,
+      "hotkey": "F1",
+      "type": "HEALRULE_SPELL",
+      "percent": true
+    },
+    {
+      "minhp": 0,
+      "maxhp": 100,
+      "minmp": 0,
+      "maxmp": 80,
+      "hotkey": "F4",
+      "type": "HEALRULE_ITEM",
+      "percent": true
+    }
+  ]
+}

@@ -1,5 +1,6 @@
 import client, win32con, healrule, healer, array, pprint, memory
 from healrule import *
+import settingloader
 
 cl = client.Client()
 
@@ -18,5 +19,4 @@ print("EXP         : " + str(cl.getEXP()))
 pprint.pprint(memory.Memory.gettibiaclients())
 
 # Rules will be prioritised where first is most important
-hrs = [healrule.HealRule(0, 40, 10, 100, "F3", HEALRULE_SPELL, True), healrule.HealRule(40, 70, 10, 100, "F2", HEALRULE_SPELL, True), healrule.HealRule(70, 90, 10, 100, "F1", HEALRULE_SPELL, True), healrule.HealRule(0, 100, 0, 80, "F4", HEALRULE_ITEM, True)]
-he = healer.Healer(cl, hrs)
+he = healer.Healer(cl, settingloader.LoadJsonHealRules("config.json"))
