@@ -29,12 +29,15 @@ class Memory:
     def GetClientByConsole(self):
         clientList = self.gettibiaclients()
         iter = 0
-        for Client in clientList:
-            print(str(iter) + ": " + win32gui.GetWindowText(Client.hwnd))
-            iter += 1
-        res = input("Select a client: ")
-        print("You selected client " + win32gui.GetWindowText(clientList[int(res)].hwnd))
-        return clientList[int(res)]
+        if len(clientList) == 1:
+            return clientList[0]
+        else:
+            for Client in clientList:
+                print(str(iter) + ": " + win32gui.GetWindowText(Client.hwnd))
+                iter += 1
+            res = input("Select a client: ")
+            print("You selected client " + win32gui.GetWindowText(clientList[int(res)].hwnd))
+            return clientList[int(res)]
 
     @staticmethod
     def gettibiaclients():
