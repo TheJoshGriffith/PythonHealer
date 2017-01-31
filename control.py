@@ -14,5 +14,5 @@ class Control:
 
 	def SendKey(self, key):
 		win32api.PostMessage(self.mem.CLIENT.hwnd, win32con.WM_KEYDOWN, key, 0x03B0001)
-		time.sleep(1)
+		time.sleep(32/1000)
 		win32api.PostMessage(self.mem.CLIENT.hwnd, win32con.WM_KEYUP, key, 0xC03B0001)
