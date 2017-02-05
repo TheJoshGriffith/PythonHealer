@@ -2,7 +2,7 @@ import json
 from pprint import pprint
 from healrule import HEALRULE_ITEM, HEALRULE_SPELL, HealRule
 
-def LoadJsonHealRules(filename):
+def loadJsonHealRules(filename):
     with open(filename) as contents:
         content = json.load(contents)
         if content["healrules"] != None:
@@ -13,3 +13,9 @@ def LoadJsonHealRules(filename):
                 i += 1
         pprint(healRules)
         return healRules
+
+def getClientPath(filename):
+    with open(filename) as content:
+        if content["tibiapath"] != None:
+            return content["tibiapath"]
+    return None

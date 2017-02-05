@@ -6,7 +6,7 @@ class Memory:
         PROCESS_ALL_ACCESS = 0x1F0FFF
         self.rPM = ctypes.windll.kernel32.ReadProcessMemory
         self.wPM = ctypes.windll.kernel32.WriteProcessMemory
-        self.CLIENT = self.GetClientByConsole()
+        self.CLIENT = self.getClientByConsole()
         self.HANDLE = win32api.OpenProcess(PROCESS_ALL_ACCESS, 0, self.CLIENT.pid[1])
         self.BASEADDRESSLIST = win32process.EnumProcessModulesEx(self.HANDLE.handle)
         for BA in self.BASEADDRESSLIST:
@@ -16,17 +16,20 @@ class Memory:
                 self.MAINMODULE = BA
         self.BASEADDRESS = self.BASEADDRESSLIST[0]
 
-    def Dump(self):
+    def dump(self):
         print()
         print("HWND        : " + str(self.CLIENT.hwnd))
         print("PID         : " + str(self.CLIENT.pid))
         print("HANDLE      : " + str(self.HANDLE.handle))
         print("BASEADDRESS : " + str(self.BASEADDRESS))
 
-    def GetDefaultTibiaHandle(self):
+    def getWindowTitle(self, hwid):
+        return win32gui.GetWindowText(hwid)
+
+    def getDefaultTibiaHandle(self):
         return self.gettibiahandle()[0].GetSafeHwnd()
 
-    def GetClientByConsole(self):
+    def getClientByConsole(self):
         clientList = self.gettibiaclients()
         iter = 0
         if len(clientList) == 1:
@@ -64,21 +67,21 @@ class Memory:
             i += 1
         return hwndList
 
-    def ReadString(self, Address):
+    def readString(self, Address):
         data = b"wah"
         buff = ctypes.create_string_buffer(data, 32)
         self.rPM(self.HANDLE.handle, Address + self.BASEADDRESS, buff, 32, 0)
         val = ctypes.string_at(buff).decode("utf-8")
         return val
 
-    def ReadIntDirect(self, Address):
+    def readIntDirect(self, Address):
         val = ctypes.c_long()
         buffersize = ctypes.sizeof(val)
         bytesread = ctypes.c_ulong(0)
         self.rPM(self.HANDLE.handle, Address, ctypes.byref(val), buffersize, ctypes.byref(bytesread))
         return val
 
-    def ReadShortDirect(self, Address):
+    def readShortDirect(self, Address):
         val = ctypes.c_ushort()
         buffersize = ctypes.sizeof(val)
         bytesread = ctypes.c_ulong(0)
@@ -86,37 +89,37 @@ class Memory:
         #print(type(val.value))
         return val
 
-    def ReadPtrInt(self, Address):
+    def readPtrInt(self, Address):
         data = ctypes.c_long(0)
         iter = 0
         for i in Address:
             if iter == 0:
                 toread = ctypes.c_long(i + self.QT5CORE).value
-                data = self.ReadIntDirect(toread)
+                data = self.readIntDirect(toread)
                 iter += 1
             elif iter == len(Address) - 1:
                 toread = ctypes.c_long(data.value + i).value
-                data = self.ReadIntDirect(toread)
+                data = self.readIntDirect(toread)
                 return data.value
             else:
                 toread = ctypes.c_long(data.value + i).value
-                data = self.ReadIntDirect(toread)
+                data = self.readIntDirect(toread)
                 iter += 1
 
-    def ReadPtrShort(self, Address):
+    def readPtrShort(self, Address):
         data = ctypes.c_long(0)
         iter = 0
         for i in Address:
             if iter == 0:
                 toread = ctypes.c_long(i + self.QT5CORE).value
-                data = self.ReadIntDirect(toread)
+                data = self.readIntDirect(toread)
                 iter += 1
             elif iter == len(Address) - 1:
                 res = ctypes.c_short(0)
                 toread = ctypes.c_long(data.value + i).value
-                res = self.ReadShortDirect(toread)
+                res = self.readShortDirect(toread)
                 return res.value
             else:
                 toread = ctypes.c_long(data.value + i).value
-                data = self.ReadIntDirect(toread)
+                data = self.readIntDirect(toread)
                 iter += 1

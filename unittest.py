@@ -13,10 +13,7 @@ print("PosY        : " + str(cl.getPosY()))
 print("PosZ        : " + str(cl.getPosZ()))
 print("EXP         : " + str(cl.getEXP()))
 
-#cl.sendText("Test")
-#cl.sendKey(win32con.VK_F1)
-
-pprint.pprint(memory.Memory.gettibiaclients())
+pprint.pprint(cl.getWindowTitle())
 
 # Rules will be prioritised where first is most important
-he = healer.Healer(cl, settingloader.LoadJsonHealRules("config.json"))
+he = healer.Healer(cl, settingloader.loadJsonHealRules("config.json"))

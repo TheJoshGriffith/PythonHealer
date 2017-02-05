@@ -36,5 +36,9 @@
       "type": "HEALRULE_ITEM",
       "percent": true
     }
-  ]
+  ],
+  "conditionhealer" : {
+    "para": true,
+    "parahotkey": "f8"
+  }
 }
