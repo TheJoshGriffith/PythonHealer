@@ -1,4 +1,4 @@
-import client, healrule, threading, time, pprint, random
+import client, healrule, threading, time, pprint, random, clientfilemanager, json
 from healrule import *
 
 class Healer:
@@ -14,6 +14,11 @@ class Healer:
 
     def stop(self):
         self.healerThread.stop()
+
+    def getHotkeys(self):
+        config = clientfilemanager.clientFileManager.getSettingFile()
+        contents = json.load(config)
+        hotkeys = contents["hotkeyOptions"]
 
     def addHealRule(self, healrule):
         self.healrules.insert(healrule)

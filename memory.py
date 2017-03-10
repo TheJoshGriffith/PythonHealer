@@ -1,4 +1,4 @@
-import ctypes, win32ui, win32gui, win32process, win32api, clientprocess, control
+import ctypes, win32ui, win32gui, win32process, win32api, clientprocess, control, pprint
 
 
 class Memory:
@@ -67,11 +67,12 @@ class Memory:
             i += 1
         return hwndList
 
-    def readString(self, Address):
-        data = b"wah"
-        buff = ctypes.create_string_buffer(data, 32)
-        self.rPM(self.HANDLE.handle, Address + self.BASEADDRESS, buff, 32, 0)
-        val = ctypes.string_at(buff).decode("utf-8")
+    def readString(self, Address, Len):
+        bytesread = ctypes.c_ulong(0)
+        buff = ctypes.create_string_buffer(Len)
+        self.rPM(self.HANDLE.handle, Address, ctypes.byref(buff), Len, ctypes.byref(bytesread))
+        print(bytesread.value)
+        val = ctypes.string_at(buff, Len).decode("utf-16")
         return val
 
     def readIntDirect(self, Address):

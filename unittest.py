@@ -15,5 +15,7 @@ print("EXP         : " + str(cl.getEXP()))
 
 pprint.pprint(cl.getWindowTitle())
 
+pprint.pprint(cl.getStatuses())
+
 # Rules will be prioritised where first is most important
 he = healer.Healer(cl, settingloader.loadJsonHealRules("config.json"))

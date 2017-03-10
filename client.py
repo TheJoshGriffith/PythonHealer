@@ -1,4 +1,4 @@
-import memory, addresses, control, healer
+import memory, addresses, control, healer, pprint
 
 class Client:
     def __init__(self):
@@ -43,17 +43,23 @@ class Client:
         return self.mem.readPtrShort(self.addr.posz)
 
     def getStatusCount(self):
-        return self.mem.readPtrInt(self.addr.statusc)
+        return self.mem.readIntDirect(self.mem.readPtrInt(self.addr.statusc) + 0xC)
 
     def getStatuses(self):
-        statusCount = self.getStatusCount()
-        if statusCount == 0:
+        statuses = [] # missing final value from statusc is 0xC
+        adrNow = self.mem.readPtrInt(self.addr.statusc)
+        if adrNow == -1:
             return None
-        statuses = []
-        currentStatus = self.addr.statuss
-        currentStatus.append(self.mem.readPtrInt(currentStatus))
-        for i in range(0, statusCount):
-            statuses[i] = self.mem.readPtrInt(self.addr.statuss)
+        adrNow = adrNow + 0xC
+        statusCount = self.mem.readIntDirect(adrNow)
+        for i in range(1, statusCount.value + 1):
+            adrItem = self.mem.readIntDirect(adrNow + (i * 4))
+            adrItem = adrItem.value + 0xC
+            adrItem = self.mem.readIntDirect(adrItem)
+            item = self.mem.readString(adrItem.value + 0x10, 64)
+            statuses.append(item)
+        return statuses
+
 
     def sendText(self, text):
         self.ctrl.SendText(text)
